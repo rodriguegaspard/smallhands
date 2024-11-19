@@ -19,8 +19,7 @@ class_ids = [
 class_mapping = dict(zip(range(len(class_ids)), class_ids))
 
 # Path to images and annotations
-path_images = "./datasets/hagrid/images"
-path_annot = "./datasets/hagrid/annotations"
+path_annot = "./datasets/annotations/"
 
 json_files = sorted(
         [
@@ -97,7 +96,7 @@ def create_dataset(json_files):
     print("Writing labels and moving files..")
     for split in [("train", train), ("val", val)]:
         for data in split[1]:
-            shutil.move("./datasets/hagrid/images/" + data[0] + ".jpg", "./datasets/hands/" + split[0] + "/images/" + data[0] + ".jpg")
+            shutil.move("./datasets/images/" + data[0] + ".jpg", "./datasets/hands/" + split[0] + "/images/" + data[0] + ".jpg")
             with open("./datasets/hands/" + split[0] + "/labels/" + data[0] + ".txt", 'w') as file:
                 for bbox, label in zip(data[1], data[2]):
                     # I might need to map those to a different number and a new class?
@@ -112,5 +111,6 @@ def optimize_dataset(directory):
     # Zip dataset into 'path/to/dataset.zip'
     zip_directory(path)
 
+create_dataset(json_files)
 optimize_dataset("./datasets/hands/")
 

@@ -1,8 +1,8 @@
 import os
 import json
-import glob
 from pathlib import Path
 import shutil
+import random
 
 from ultralytics.data.utils import compress_one_image
 from ultralytics.utils.downloads import zip_directory
@@ -69,6 +69,7 @@ def parse_annotations(json_file):
 
 
 def dataset_split(dataset, split_ratio):
+    random.shuffle(dataset)
     index = int(len(dataset)*split_ratio)
     return dataset[:index], dataset[index:]
 

@@ -16,6 +16,7 @@ class_ids = [
         "stop",
         "no_gesture"
         ]
+
 class_mapping = dict(zip(range(len(class_ids)), class_ids))
 
 # Path to images and annotations
@@ -28,28 +29,16 @@ json_files = sorted(
             ]
         )
 
-# Conversion function, in case they are needed
-def convert_relative_to_absolute(bboxes, width, height):
+def convert_xywh_to_cxcywh(bboxes):
     converted_bboxes = []
     for bbox in bboxes:
         converted_bbox = []
-        converted_bbox.append(bbox[0] * width)
-        converted_bbox.append(bbox[1] * height)
-        converted_bbox.append(bbox[2] * width)
-        converted_bbox.append(bbox[3] * height)
+        converted_bbox.append(bbox[0] + (bbox[2]/2))
+        converted_bbox.append(bbox[1] + (bbox[3]/2))
+        converted_bbox.append(bbox[2])
+        converted_bbox.append(bbox[3])
         converted_bboxes.append(converted_bbox)
     return converted_bboxes
-
-def convert_relative_to_xyxy(bboxes, width, height):
-  converted_bboxes = []
-  for bbox in bboxes:
-    converted_bbox = []
-    converted_bbox.append(int((bbox[0]*width) - (bbox[2]*width)/2.0))
-    converted_bbox.append(int((bbox[1]*height) - (bbox[3]*height)/2.0))
-    converted_bbox.append(int((bbox[0]*width) + (bbox[2]*width)/2.0))
-    converted_bbox.append(int((bbox[1]*height) + (bbox[3]*height)/2.0))
-    converted_bboxes.append(converted_bbox)
-  return converted_bboxes
 
 def parse_annotations(json_file):
     images = []
@@ -61,11 +50,10 @@ def parse_annotations(json_file):
         data = json.load(f)
         for filename in data:
             images.append(filename)
-            boxes.append(data[filename]['bboxes'])
+            boxes.append(convert_xywh_to_cxcywh(data[filename]['bboxes']))
             labels_ids = [list(class_mapping.keys())[list(class_mapping.values()).index(lbl)] for lbl in data[filename]['labels']]
             labels.append(labels_ids)
     return images, boxes, labels
-
 
 def dataset_split(dataset, split_ratio):
     random.shuffle(dataset)

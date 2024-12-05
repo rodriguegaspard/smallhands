@@ -1,12 +1,12 @@
 from ultralytics import YOLO
 import cv2
 
-model = YOLO('./models/best.onnx')
+model = YOLO('./models/smallhands.onnx', task="detect")
 cap = cv2.VideoCapture(0)
 
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-fps = int(cap.get(cv2.CAP_PROP_FPS)) or 30  # Default to 30 FPS if FPS is unavailable
+fps = 30  # Default to 30 FPS if FPS is unavailable
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for saving as .mp4
 out = cv2.VideoWriter('output.mp4', fourcc, fps, (frame_width, frame_height))
 

@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 
-model = YOLO('./models/smallhands.onnx', task="detect")
+model = YOLO('./models/smallhands.pt', task="detect")
 cap = cv2.VideoCapture(0)
 
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
